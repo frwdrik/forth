@@ -10,7 +10,7 @@
 
     // Segment for user definitions
     .text
-    .set INITIAL_DATA_SEGMENT_SIZE, 65536
+    .set INITIAL_DATA_SEGMENT_SIZE, 65536*8
 set_up_data_segment:
     // Allocate initial data segment, HERE points to it
     xor %rdi, %rdi

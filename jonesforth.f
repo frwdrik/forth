@@ -1148,3 +1148,4 @@ S" f1.f" LOAD-FILE
 ." resuming from jonesforth.f" CR
 
 S" f2.f" LOAD-FILE
+S" long_file.f" LOAD-FILE

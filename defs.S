@@ -1,78 +1,3 @@
-    // Literals
-
-    // We define a code LIT that instead of executing code, expects
-    // next word to be address of a literal value to push to stack
-    defcode "LIT",3,,LIT
-    // rsi already points to next "instruction", so load it into rax
-    // and increment rsi
-    lodsq
-    push %rax
-    NEXT
-
-    // LITSTRING expects next word to be length of a string, followed
-    // by the literal string itself. Pushes length and address of
-    // string onto the stack.
-    defcode "LITSTRING",9,,LITSTRING
-    lodsq
-    push %rsi
-    push %rax
-    add %rax, %rsi
-    add $7, %rsi
-    and $~7, %rsi
-    NEXT
-
-    // MEMORY
-
-    // M[stack0] = stack1
-    defcode "!",1,,STORE
-    pop %rbx
-    pop %rax
-    mov %rax,(%rbx)
-    NEXT
-
-    defcode "@",1,,FETCH
-    pop %rbx
-    mov (%rbx),%rax
-    push %rax
-    NEXT
-
-    defcode "+!",2,,ADDSTORE
-    pop %rbx
-    pop %rax
-    add %rax,(%rbx)
-    NEXT
-
-    defcode "-!",2,,SUBSTORE
-    pop %rbx
-    pop %rax
-    sub %rax,(%rbx)
-    NEXT
-
-    // ( byte addr -- )
-    defcode "C!",2,,STOREBYTE
-    pop %rbx
-    pop %rax
-    mov %al, (%rbx)
-    NEXT
-
-    // ( addr -- byte )
-    defcode "C@",2,,LOADBYTE
-    pop %rbx
-    xor %rax, %rax
-    mov (%rbx), %al
-    push %rax
-    NEXT
-
-    // block copy, ( source dest len )
-    defcode "CMOVE",5,,CMOVE
-    mov %rsi, %rdx
-    pop %rcx
-    pop %rdi
-    pop %rsi
-    rep movsb
-    mov %rdx, %rsi
-    NEXT
-
     // Creating words
 
     // CREATE creates the header for a word
@@ -114,6 +39,29 @@
     .quad FIND
     .quad HIDDEN
     .quad EXIT
+
+    // Literals
+
+    // We define a code LIT that instead of executing code, expects
+    // next word to be address of a literal value to push to stack
+    defcode "LIT",3,,LIT
+    // rsi already points to next "instruction", so load it into rax
+    // and increment rsi
+    lodsq
+    push %rax
+    NEXT
+
+    // LITSTRING expects next word to be length of a string, followed
+    // by the literal string itself. Pushes length and address of
+    // string onto the stack.
+    defcode "LITSTRING",9,,LITSTRING
+    lodsq
+    push %rsi
+    push %rax
+    add %rax, %rsi
+    add $7, %rsi
+    and $~7, %rsi
+    NEXT
 
     // COMMA appends the value at top of stack to HERE, and increments
     // HERE by 8 bytes
@@ -181,6 +129,3 @@ _COMMA:
     defcode "EXECUTE",7,,EXECUTE
     pop %rax
     jmp *(%rax)
-
-    defcode "bb",2,,bb
-    NEXT

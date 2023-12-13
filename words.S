@@ -1,7 +1,7 @@
     // This code exists to test the execution method of forth. I will
     // try to write some words, both "normal" ones and ones defined
     // solely in assembly, and see how it goes.
-    //
+
     // The basic model is this: We keep in rsi the address of a
     // location containg the address of the next instruction to
     // execute. In other words, rsi points to somewhere within a word
@@ -27,7 +27,6 @@
     // preamble in a C function call. It stores the return address on
     // the RSP stack, and jumps to the next word.
 
-
     // name: name of word in forth, max 32 chars
     // namelen: goes into bottom five bits of len
     // flags: we use top three bits of len for flags
@@ -42,11 +41,12 @@
 
     .include "macro.S"
     .include "init.S"
-    .include "io2.S"
+    .include "io.S"
     .include "dict.S"
+    .include "funs.S"
+    .include "mem.S"
     .include "defs.S"
     .include "number.S"
-    .include "funs.S"
     .include "err.S"
 
     .equ F_IMMED,   0x80
@@ -216,28 +216,6 @@ DOCOL:
     test %rax, %rax
     jz code_BRANCH
     lodsq
-    NEXT
-
-    defcode "PT",2,,PT
-    pop %rdi
-    push %rsi
-    _call _INTERNAL_FORMAT_NUM
-    mov %rax, %rdi
-    mov %rcx, %rsi
-    _call generic_print
-    _call print_newline
-    pop %rsi
-    NEXT
-
-    defcode "PRINT_RSP",9,,PRINT_RSP
-    mov %rsp, %rdi
-    push %rsi
-    _call _INTERNAL_FORMAT_NUM
-    mov %rax, %rdi
-    mov %rcx, %rsi
-    _call generic_print
-    _call print_newline
-    pop %rsi
     NEXT
 
     defword "QUIT",4,,QUIT

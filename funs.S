@@ -255,40 +255,31 @@
     notq (%rsp)
     NEXT
 
-    defcode ">R",2,,TOR
-    pop %rax
-    PUSHRSP %rax
+    defcode "PT",2,,PT
+    pop %rdi
+    push %rsi
+    _call _INTERNAL_FORMAT_NUM
+    mov %rax, %rdi
+    mov %rcx, %rsi
+    _call generic_print
+    _call print_newline
+    pop %rsi
     NEXT
 
-    defcode "R>",2,,FROMR
-    POPRSP %rax
-    push %rax
-    NEXT
-
-    // pushes value from return stack ontto data stack
-    defcode "RSP@",4,,RSPFETCH
-    push %rbp
-    NEXT
-
-    // pops value from data stack to return stack
-    defcode "RSP!",4,,RSPSTORE
-    pop %rbp
+    defcode "PRINT_RSP",9,,PRINT_RSP
+    mov %rsp, %rdi
+    push %rsi
+    _call _INTERNAL_FORMAT_NUM
+    mov %rax, %rdi
+    mov %rcx, %rsi
+    _call generic_print
+    _call print_newline
+    pop %rsi
     NEXT
 
     // drops top of return stack
     defcode "RDROP",5,,RDROP
     add $8, %rbp
-    NEXT
-
-    // pushes address of top of stack onto stack
-    defcode "DSP@",4,,DSPFETCH
-    mov %rsp, %rax
-    push %rax
-    NEXT
-
-    // makes stack pointer be the value that sits at top of stack
-    defcode "DSP!",4,,DSPSTORE
-    pop %rsp
     NEXT
 
     // Reads a char from stdin, pushes the char onto the stack
