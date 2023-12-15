@@ -34,19 +34,43 @@ _NUMBER:
     movb (%rdi), %bl
     inc %rdi
     // push 0 on stack
-    push %rax
+    push $0
     // negative number?
     cmpb $'-',%bl
-    jnz 2f
-    pop %rax
+    jnz check_hex_prefix      /* not negative, start parsing number */
     // push <> 0 on stack, indicating negative
-    push %rbx
+    pop %rax
+    push $1
     dec %rcx
-    jnz 1f
+    jnz is_negative /* negative, increment rdi and then start parsing */
     // error: string is only '-'.
     pop %rbx
     mov $1,%rcx
     ret
+
+is_negative:
+    // bl is '-'
+    // rdi points to next char
+    mov (%rdi), %bl
+    incq %rdi
+
+check_hex_prefix:
+    // check for 0x prefix
+    cmp $'0', %bl
+    jne 2f
+    movb (%rdi), %bl
+    cmp $'x', %bl
+    jne not_hex
+is_hex:
+    mov $16, %rdx
+    movb 1(%rdi), %bl
+    add $2, %rdi
+    sub $2, %rcx
+    jmp 2f
+
+not_hex:
+    mov -1(%rdi), %bl
+    jmp 2f
 
     // Loop reading digits.
     // %rax *= BASE
