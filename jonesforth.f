@@ -1103,6 +1103,37 @@ S" 1 2 3" CSTRING DUP STRLEN TELL
 ;
 
 
+( Print a stack trace by walking up the return stack. )
+: PRINT-STACK-TRACE
+        RSP@                            ( start at caller of this function )
+        BEGIN
+                DUP R0 8- <             ( RSP < R0 )
+        WHILE
+                DUP @                   ( get the return stack entry )
+                                        ( rsp_0 rsp_n )
+                CASE
+                ' EXCEPTION-MARKER 8+ OF        ( is it the exception stack frame? )
+                        ." CATCH ( DSP="
+                        8+ DUP @ U.             ( print saved stack pointer )
+                        ." ) "
+                ENDOF
+                                                ( default case )
+                        DUP                     ( rsp_n rsp_n )
+                        .S
+                        CFA>                    ( look up the codeword to get the dictionary entry )
+                        ?DUP IF                 ( and print it )
+                                2DUP                    ( dea addr dea )
+                                ID.                     ( print word from dictionary entry )
+                                [ CHAR + ] LITERAL EMIT
+                                SWAP >DFA 8+ - .        ( print offset )
+                        THEN
+                ENDCASE
+                8+                      ( move up the stack )
+        REPEAT
+        DROP
+        CR
+;
+
 : WELCOME
   S" TEST-MODE" FIND NOT IF
     ." JONESFORTH VERSION " VERSION . CR
@@ -1144,4 +1175,4 @@ WELCOME
 HIDE WELCOME
 
 S" sock.f" LOAD-FILE
-S" sock_test.f" LOAD-FILE
+\ S" sock_test.f" LOAD-FILE
