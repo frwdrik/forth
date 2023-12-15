@@ -70,7 +70,7 @@
     push %rcx
     NEXT
 
-    // duplicate top of stack if non-zero   
+    // duplicate top of stack if non-zero
     defcode "?DUP",4,,QDUP
     mov (%rsp),%rax
     test %rax,%rax
@@ -91,7 +91,7 @@
     NEXT
 
     defcode "4-",2,,DECR4
-    subq $4,(%rsp) 
+    subq $4,(%rsp)
     NEXT
 
     defcode "8+",2,,INCR8
@@ -103,13 +103,13 @@
     NEXT
 
     defcode "+",1,,ADD
-    pop %rax  
+    pop %rax
     add %rax,(%rsp)
     NEXT
 
     // (a b) -> (a-b)
     defcode "-",1,,SUB
-    pop %rax       
+    pop %rax
     sub %rax,(%rsp)
     NEXT
 
@@ -292,6 +292,20 @@
     push %rbx
     NEXT
 
+    // ( arg4 arg3 arg2 arg1 nr -- result )
+    defcode "SYSCALL4",8,,SYSCALL4
+    mov %rsi, %r9
+    pop %rax
+    pop %rdi
+    pop %rsi
+    pop %rdx
+    pop %r10
+    syscall
+    push %rax
+    mov %r9, %rsi
+    NEXT
+
+    // ( arg3 arg2 arg1 nr -- result )
     defcode "SYSCALL3",8,,SYSCALL3
     mov %rsi, %r9
     pop %rax
@@ -303,6 +317,7 @@
     mov %r9, %rsi
     NEXT
 
+    // ( arg2 arg1 nr -- result )
     defcode "SYSCALL2",8,,SYSCALL2
     mov %rsi, %r9
     pop %rax
@@ -313,6 +328,7 @@
     mov %r9, %rsi
     NEXT
 
+    // ( arg1 nr -- result)
     defcode "SYSCALL1",8,,SYSCALL1
     pop %rax
     pop %rdi

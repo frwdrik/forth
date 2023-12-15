@@ -78,6 +78,9 @@
     defconst "SYS_WRITE",9,,SYS_WRITE,__NR_write
     defconst "SYS_CREAT",9,,SYS_CREAT,__NR_creat
     defconst "SYS_BRK",7,,SYS_BRK,__NR_brk
+    defconst "SYS_SOCKET",10,,SYS_SOCKET,__NR_socket
+    defconst "SYS_CONNECT",11,,SYS_CONNECT,__NR_connect
+    defconst "SYS_NANOSLEEP",13,,SYS_NANOSLEEP,__NR_nanosleep
 
     defconst "O_RDONLY",8,,__O_RDONLY,0
     defconst "O_WRONLY",8,,__O_WRONLY,1

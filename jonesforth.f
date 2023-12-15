@@ -1143,9 +1143,5 @@ DROP CLOSE-FILE .
 WELCOME
 HIDE WELCOME
 
-S" f1.f" LOAD-FILE
-
-." resuming from jonesforth.f" CR
-
-S" f2.f" LOAD-FILE
-S" long_file.f" LOAD-FILE
+S" sock.f" LOAD-FILE
+S" sock_test.f" LOAD-FILE
